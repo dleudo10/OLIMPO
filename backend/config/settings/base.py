@@ -154,6 +154,12 @@ OAUTH2_PROVIDER = {
     "OAUTH2_VALIDATOR_CLASS": "apps.accounts.oauth_validators.OlimpoOAuth2Validator",
 }
 
+OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = "oauth2_provider.AccessToken"
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = "oauth2_provider.RefreshToken"
+OAUTH2_PROVIDER_GRANT_MODEL = "oauth2_provider.Grant"
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = "oauth2_provider.IDToken"
+
 # ===== LOGIN URL DEL PORTAL ==========
 LOGIN_URL = "http://localhost:5173/olimpo/auth/signin"
 

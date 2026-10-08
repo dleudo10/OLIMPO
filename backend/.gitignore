@@ -1,7 +1,7 @@
 # Python
 
-pycache/ .py[cod] $py.class
-
+pycache/ .py[cod] $py.class __pycache__/ *.so *.dylib *.dll
+*.pyc
 # Virtual environments
 
 venv/ .venv/ env/ ENV/
