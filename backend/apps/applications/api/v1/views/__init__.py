@@ -1,0 +1,1 @@
+from .portal_apps import PortalApplicationsView
