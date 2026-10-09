@@ -9,3 +9,5 @@ class RoleInline(admin.TabularInline):
 class RoleAdmin(admin.ModelAdmin):
     list_display = ("application", "code", "name", "description")
     search_fields = ("application", "permissions")
+    
+    # MYcaeBxkIy76wqwDpCojBl842qj17IooMr05BVyk

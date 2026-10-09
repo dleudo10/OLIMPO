@@ -9,8 +9,6 @@ class MeView(APIView):
         return Response({
             "success": True,
             "message": "Usuario autenticado.",
-            "data": {
-                "user": serializer.data
-            },
+            "data": serializer.data,
             "errors": None
         }, status=status.HTTP_200_OK)

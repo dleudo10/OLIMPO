@@ -5,8 +5,11 @@ class PortalApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = (
+            "id",
             "name",
+            "category",
             "description",
             "url_base",
             "icon",
+            "status"
         )

@@ -3,11 +3,10 @@ import {
     LayoutGrid,
     X,
     LogOut,
-    Star,
-    Bell
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useSidebar } from '../context/SidebarContext'
+import { useLogout } from '../hooks/auth/useLogout'
 
 interface NavigationItem {
     name: string
@@ -21,16 +20,6 @@ const navigation: NavigationItem[] = [
         to: '/applications',
         icon: LayoutGrid,
     },
-    {
-        name: 'Favoritos',
-        to: '/favorites',
-        icon: Star,
-    },
-    {
-        name: 'Notificaciones',
-        to: '/notifications',
-        icon: Bell,
-    },
 ]
 
 const AppSidebar = () => {
@@ -39,6 +28,8 @@ const AppSidebar = () => {
         open,
         closeSidebar,
     } = useSidebar()
+
+    const logoutMutation = useLogout();
 
     return (
         <>
@@ -137,9 +128,8 @@ const AppSidebar = () => {
 
                     <button
                         type="button"
-                        onClick={() => {
-                            // logout()
-                        }}
+                        onClick={() => logoutMutation.mutate()}
+                        disabled={logoutMutation.isPending}
                         title={collapsed ? 'Cerrar sesión' : undefined}
                         className="
                             flex w-full items-center gap-3

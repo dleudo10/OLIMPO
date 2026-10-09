@@ -5,4 +5,20 @@ export type LoginPayload = {
 	password: string;
 }
 
-export type LoginResponse = ApiResponse<null>
+export type User = {
+    id: number;
+    external_id: string;
+    full_name: string | null;
+    email: string | null;
+    identity_source: "ERP" | "LOCAL" | string;
+    is_active: boolean;
+    is_staff: boolean;
+};
+
+export type LoginData = {
+    user: User;
+};
+
+export type LoginResponse = ApiResponse<LoginData>;
+
+export type MeResponse = ApiResponse<User>

@@ -1,2 +1,3 @@
 from .application_admin import ApplicationAdmin
 from .access_application_admin import AccessApplicationAdmin
+from .oidc_client_admin import OIDCClientAdmin

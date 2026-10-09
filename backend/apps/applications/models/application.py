@@ -1,6 +1,11 @@
 from django.db import models
 from apps.core.models import BaseModel
 
+class StatusApplication(models.TextChoices):
+    NEW = 'new', 'Nuevo'
+    SOON = 'soon', 'Próximamente'
+    AVAILABLE = 'available', 'Disponible'
+
 class Application(BaseModel):
     """
     Cada sistema/app que delega su login en este SSO.
@@ -9,8 +14,10 @@ class Application(BaseModel):
     """
     code = models.SlugField('Codigo', max_length=50, unique=True)
     name = models.CharField('Nombre', max_length=150)
+    category = models.CharField('Categoría', max_length=100, blank=True, null=True)
     description = models.TextField('Descripción', blank=True)
     url_base = models.URLField('URL', help_text="URL a la que se redirige tras el login")
+    status = models.CharField('Estado', max_length=20, choices=StatusApplication.choices, default=StatusApplication.NEW)
     icon = models.CharField('Icono',
         max_length=50, help_text="Nombre de ícono opcional para el dashboard"
     )

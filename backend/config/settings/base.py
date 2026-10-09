@@ -79,18 +79,18 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     },
     
-    'clinica': {
-        'ENGINE': 'mssql', 
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'TrustServerCertificate': 'yes',
-        },
-    },
+    # 'clinica': {
+    #     'ENGINE': 'mssql', 
+    #     'NAME': env('DB_NAME'),
+    #     'USER': env('DB_USER'),
+    #     'PASSWORD': env('DB_PASSWORD'),
+    #     'HOST': env('DB_HOST'),
+    #     'PORT': env('DB_PORT'),
+    #     'OPTIONS': {
+    #         'driver': 'ODBC Driver 17 for SQL Server',
+    #         'TrustServerCertificate': 'yes',
+    #     },
+    # },
 }
 
 
@@ -142,7 +142,7 @@ OAUTH2_PROVIDER = {
         "apps": "Consultar aplicativos y roles asignados",
     },
     "OIDC_ENABLED": True,
-    "OIDC_RSA_PRIVATE_KEY": env("OIDC_RSA_PRIVATE_KEY"),
+    "OIDC_RSA_PRIVATE_KEY": env("OIDC_RSA_PRIVATE_KEY").replace("\\n", "\n"),
     # Tiempos de vida de los tokens
     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,
     "REFRESH_TOKEN_EXPIRE_SECONDS": 60 * 60 * 24 * 14,

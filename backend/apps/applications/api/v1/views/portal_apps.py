@@ -8,7 +8,7 @@ class PortalApplicationsView(APIView):
     def get(self, request):
         accesses = (
             AccessApplications.objects
-            .filter(user=request.user, application__is_active=True)
+            .filter(user=request.user, application__is_active=True, is_active=True)
             .select_related("application", "role")
         )
         

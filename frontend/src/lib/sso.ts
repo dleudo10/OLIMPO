@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const BASE_URL = import.meta.env.VITE_SSO_API_URL;
+const BASE_URL = import.meta.env.VITE_API_SSO_URL;
 
 export const SSOApi = axios.create({
     baseURL: BASE_URL,
@@ -9,4 +9,7 @@ export const SSOApi = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
+    xsrfCookieName: "csrftoken",
+    xsrfHeaderName: "X-CSRFToken",
+    withXSRFToken: true,
 })

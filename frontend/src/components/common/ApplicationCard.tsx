@@ -1,44 +1,23 @@
 import { ArrowRight, Star } from "lucide-react";
-import type { ReactNode } from "react";
-
-export type ApplicationStatus =
-    | "available"
-    | "soon"
-    | "new";
-
-export interface Application {
-    id: string;
-    name: string;
-    category: string;
-    description: string;
-    status: ApplicationStatus;
-    icon: ReactNode;
-    href?: string;
-}
-
-interface ApplicationCardProps {
-    application: Application;
-}
+import type { ApplicationCardProps } from "../../types/applications.type";
+import { icons } from "lucide-react";
 
 export function ApplicationCard({
     application,
+    role,
 }: ApplicationCardProps) {
-    const {
-        name,
-        category,
-        description,
-        status,
-        icon,
-        href,
-    } = application;
+    const { name, category, description, status, icon, url_base } = application;
+    const { name: roleName } = role;
 
-    const isAvailable = status === "available";
+    const isAvailable = status === "available" || status === "new";
 
     const statusLabel = {
         available: "Disponible",
         soon: "Próximamente",
         new: "Nueva",
     }[status];
+
+    const TagIcon = icons[icon as keyof typeof icons];
 
     const card = (
         <article
@@ -55,23 +34,19 @@ export function ApplicationCard({
             <div className="flex items-start justify-between">
                 {/* Icon */}
                 <div className="flex h-10.5 w-10.5 items-center justify-center rounded-xl bg-slate-100 text-brand-600">
-                    {icon}
+                    {TagIcon && <TagIcon size={22} strokeWidth={1.8} />}
                 </div>
 
                 {/* Status */}
                 <div className="flex items-center gap-1.5">
-                    {status === "new" && (
-                        <span className="rounded-full bg-brand-500 px-2.5 py-1 text-[10px] font-medium text-white">
-                            Nueva
-                        </span>
-                    )}
-
                     <span
                         className={[
-                        "rounded-full px-2.5 py-1 text-[10px] font-medium",
-                        status === "available"
-                            ? "border border-brand-200 bg-brand-50 text-brand-700"
-                            : "bg-slate-50 text-slate-400",
+                            "rounded-full px-2.5 py-1 text-[10px] font-medium",
+                            status === "new"
+                                ? "bg-brand-500 text-white"
+                                : status === "available"
+                                    ? "border border-brand-200 bg-brand-50 text-brand-700"
+                                    : "bg-slate-50 text-slate-400",
                         ].join(" ")}
                     >
                         {statusLabel}
@@ -108,8 +83,9 @@ export function ApplicationCard({
                     {description}
                 </p>
 
-                <span className="mt-4 inline-flex rounded-full bg-slate-50 px-2.5 py-1 text-xs text-slate-400">
-                    {category}
+                <span 
+                    className="mt-4 inline-flex rounded-full bg-brand-500 px-2.5 py-1 text-[10px] font-medium text-white">
+                    {roleName}
                 </span>
             </div>
 
@@ -138,9 +114,9 @@ export function ApplicationCard({
         </article>
     );
 
-    if (isAvailable && href) {
+    if (isAvailable && url_base) {
         return (
-            <a href={href} className="block">
+            <a href={url_base} className="block">
                 {card}
             </a>
         );

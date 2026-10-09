@@ -6,20 +6,12 @@ import {
     PanelRightClose,
 } from 'lucide-react'
 import { useSidebar } from '../context/SidebarContext'
+import { useAuth } from '../context/AuthContext'
+import UserAvatar from '../components/common/UserAvatar'
 
 const AppHeader = () => {
-    const {
-        collapsed,
-        toggle,
-        toggleSidebar,
-    } = useSidebar()
-
-    // Temporalmente
-    const user = {
-        name: 'yhorjan David Leudo Padilla',
-        username: '1023625189',
-        initials: 'YD',
-    }
+    const { collapsed, toggle, toggleSidebar, } = useSidebar()
+    const { user } = useAuth()
 
     return (
         <header className="sticky top-0 z-30 flex h-16 items-center border-b bg-white px-4 lg:px-6">
@@ -127,33 +119,19 @@ const AppHeader = () => {
                     {/* Información usuario */}
                     <div className="flex items-center gap-3">
                         {/* Avatar */}
-                        <div
-                            className="
-                                flex
-                                h-10
-                                w-10
-                                shrink-0
-                                items-center
-                                justify-center
-                                rounded-full
-                                bg-brand-500
-                                text-sm
-                                font-semibold
-                                text-white
-                            "
-                        >
-                            {user.initials}
-                        </div>
+                        <UserAvatar
+                            name={user?.full_name || ''}
+                        />
 
                         {/* Nombre y usuario */}
                         <div className="hidden text-left sm:block">
                             <p className="text-sm font-semibold text-gray-800">
-                                {user.name}
+                                { user?.full_name || 'Usuario sin nombre'}
                             </p>
-
                             <p className="text-xs text-gray-500">
-                                {user.username}
+                                {user?.external_id}
                             </p>
+                            
                         </div>
                     </div>
                 </div>

@@ -13,9 +13,19 @@ ALLOWED_HOSTS = [
 DATABASES['default']['NAME'] = BASE_DIR / 'db_development.sqlite3'
 
 # ========== CORS ==========
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", 
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
 CORS_ALLOW_CREDENTIALS = True            # necesario para que viaje la cookie
-CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173", 
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
 
 CSRF_COOKIE_HTTPONLY = False             # React necesita leer csrftoken
 SESSION_COOKIE_HTTPONLY = True

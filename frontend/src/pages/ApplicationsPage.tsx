@@ -1,128 +1,56 @@
 import { useMemo, useState } from "react";
-import {
-  Activity,
-  BarChart3,
-  FileText,
-  Radio,
-  Wallet,
-  Workflow,
-} from "lucide-react";
-import { ApplicationCard, type Application } from "../components/common/ApplicationCard";
+import { ApplicationCard } from "../components/common/ApplicationCard";
 import { ApplicationsToolbar, type ApplicationFilter } from "../components/common/ApplicationsToolbar";
 import { PageHeader } from "../components/common/PageHeader";
-
-const applications: Application[] = [
-  {
-    id: "apollo",
-    name: "APOLO",
-    category: "Gestión Clínica",
-    description:
-      "Herramientas para apoyar la gestión asistencial.",
-    status: "new",
-    icon: <Activity size={22} />,
-  },
-  {
-    id: "argos",
-    name: "ARGOS",
-    category: "Control y Seguimiento",
-    description:
-      "Observación, trazabilidad y control de procesos.",
-    status: "soon",
-    icon: <Radio size={22} />,
-  },
-  {
-    id: "athena",
-    name: "ATHENA",
-    category: "Analítica e Inteligencia de Negocios",
-    description:
-      "Datos que ayudan a tomar mejores decisiones.",
-    status: "soon",
-    href: "#",
-    icon: <BarChart3 size={22} />,
-  },
-  {
-    id: "themis",
-    name: "THEMIS",
-    category: "Gestión Documental",
-    description:
-      "Gestión y organización de documentos digitalizados.",
-    status: "available",
-	href: "http://localhost:5173/consentca/",
-    icon: <FileText size={22} />,
-  },
-  {
-    id: "hermes",
-    name: "HERMES",
-    category: "Integraciones y Comunicaciones",
-    description:
-      "Integraciones y herramientas de comunicación.",
-    status: "soon",
-    icon: <Workflow size={22} />,
-  },
-//   {
-//     id: "nemesis",
-//     name: "NEMESIS",
-//     category: "Gestión de Cartera y Glosas",
-//     description:
-//       "Gestión integral de cartera y glosas.",
-//     status: "available",
-//     href: "#",
-//     icon: <Wallet size={22} />,
-//   },
-];
+import { useGetApplications } from "../hooks/applications/useGetApplications";
 
 export default function ApplicationsPage() {
+	// 1. Extraemos las variables de control de TanStack Query
+	const { data: response, isLoading, isError, error } = useGetApplications();
+
 	const [search, setSearch] = useState("");
-	const [activeFilter, setActiveFilter] =
-		useState<ApplicationFilter>("all");
+	const [activeFilter, setActiveFilter] = useState<ApplicationFilter>("all");
+
+	const applicationsList = response?.data || [];
+	console.log("ApplicationsPage - applicationsList:", applicationsList); // Log the applications list for debugging
 
 	const filteredApplications = useMemo(() => {
 		const query = search.trim().toLowerCase();
 
-		return applications.filter((application) => {
+		// Si no hay lista todavía, devolvemos un array vacío de forma segura
+		if (!applicationsList || !Array.isArray(applicationsList)) return [];
+
+		return applicationsList.filter((app) => {
 			const matchesSearch =
 				!query ||
-				application.name
-				.toLowerCase()
-				.includes(query) ||
-				application.category
-				.toLowerCase()
-				.includes(query) ||
-				application.description
-				.toLowerCase()
-				.includes(query);
+				app.application.name?.toLowerCase().includes(query) ||
+				app.application.category?.toLowerCase().includes(query) ||
+				app.application.description?.toLowerCase().includes(query);
 
 			let matchesFilter = true;
 
 			switch (activeFilter) {
 				case "available":
-					matchesFilter =
-						application.status === "available";
+					matchesFilter = app.application.status === "available";
 					break;
-
 				case "soon":
-					matchesFilter =
-						application.status === "soon" ||
-						application.status === "new";
+					matchesFilter = app.application.status === "soon" || app.application.status === "new";
 					break;
-
 				case "favorites":
-					// Aquí conectarías tu lógica real de favoritos.
+					// TODO: Implementar lógica de favoritos aquí (ej. application.is_favorite)
 					matchesFilter = false;
 					break;
-
 				case "all":
-					default:
-						matchesFilter = true;
+				default:
+					matchesFilter = true;
 			}
 
 			return matchesSearch && matchesFilter;
 		});
-	}, [search, activeFilter]);
+	}, [applicationsList, search, activeFilter]);
 
 	return (
 		<main className="min-h-screen bg-[#f4f7fb]">
-			{/* Header reutilizable */}
 			<PageHeader
 				eyebrow="OLIMPO"
 				title="Aplicaciones"
@@ -130,7 +58,6 @@ export default function ApplicationsPage() {
 				description="Explora las aplicaciones, plataformas y herramientas que forman parte del ecosistema digital de Clínica Antioquia."
 			/>
 
-			{/* Applications */}
 			<section className="mx-auto max-w-290 px-6 py-6 pb-16">
 				<ApplicationsToolbar
 					search={search}
@@ -139,38 +66,58 @@ export default function ApplicationsPage() {
 					onFilterChange={setActiveFilter}
 				/>
 
-				{/* Counter */}
-				<p className="mb-4 text-xs text-slate-400">
-					{filteredApplications.length}{" "}
-					{filteredApplications.length === 1
-						? "aplicación encontrada"
-						: "aplicaciones encontradas"}
-				</p>
+				{/* 3. Control de Estado: Cargando */}
+				{isLoading && (
+					<div className="py-16 text-center">
+						<div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-brand-700 border-r-transparent alignment-middle"></div>
+						<p className="mt-4 text-sm text-slate-500">Cargando aplicaciones...</p>
+					</div>
+				)}
 
-				{/* Cards */}
-				<div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
-					{filteredApplications.map(
-						(application) => (
-							<ApplicationCard
-								key={application.id}
-								application={application}
-							/>
-						)
-					)}
-				</div>
-
-				{/* Empty */}
-				{filteredApplications.length === 0 && (
-					<div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center">
-						<h3 className="text-base font-semibold text-slate-700">
-							No encontramos aplicaciones
-						</h3>
-
-						<p className="mt-2 text-sm text-slate-400">
-							Intenta modificar tu búsqueda o seleccionar
-							otro filtro.
+				{/* 4. Control de Estado: Error en API */}
+				{isError && (
+					<div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
+						<h3 className="text-base font-semibold text-red-700">Hubo un problema al conectar</h3>
+						<p className="mt-1 text-sm text-red-500">
+							{error instanceof Error ? error.message : "Error desconocido de red."}
 						</p>
 					</div>
+				)}
+
+				{/* 5. Renderizado Condicional de la lista cuando la carga es exitosa */}
+				{!isLoading && !isError && (
+					<>
+						{/* Counter */}
+						<p className="mb-4 text-xs text-slate-400">
+							{filteredApplications.length}{" "}
+							{filteredApplications.length === 1
+								? "aplicación encontrada"
+								: "aplicaciones encontradas"}
+						</p>
+
+						{/* Cards */}
+						<div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+							{filteredApplications.map((app) => (
+								<ApplicationCard
+									key={app.id}
+									application={app.application}
+									role={app.role}
+								/>
+							))}
+						</div>
+
+						{/* Empty State */}
+						{filteredApplications.length === 0 && (
+							<div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center">
+								<h3 className="text-base font-semibold text-slate-700">
+									No encontramos aplicaciones
+								</h3>
+								<p className="mt-2 text-sm text-slate-400">
+									Intenta modificar tu búsqueda o seleccionar otro filtro.
+								</p>
+							</div>
+						)}
+					</>
 				)}
 			</section>
 		</main>

@@ -1,30 +1,22 @@
 import { useMutation } from "@tanstack/react-query";
-import type { LoginPayload } from "../../types/auth.types";
+import { useAuth } from "../../context/AuthContext";
 import { login } from "../../services/auth.api";
 
+import type { LoginPayload, } from "../../types/auth.types";
+
+
 export const useLogin = () => {
-    const { setUser, setTimeRefresh } = useAuth()
+    const { setUser, refreshUser, } = useAuth();
 
     return useMutation({
-        mutationFn: (payload: LoginPayload) => login(payload), 
-        onSuccess: (data) => {
+        mutationFn: ( payload: LoginPayload ) => login(payload),
+        onSuccess: async (response) => {
 
-            // if (data.data?.access) {
-            //     setToken(data.data?.access)
-            //     const decoded = decodeToken(data.data.access)
-            //     setTimeRefresh(data.data?.access_expires_in)
-            //     if (decoded) {
-            //         setUser({
-            //             id: decoded.id,
-            //             external_id: decoded.external_id,
-            //             name: decoded.name,
-            //             role: decoded.role,
-            //             role_name: decoded.role_name,
-            //             permissions: decoded.permissions
-            //         })
-            //     }
-            // }
-            
-        }
-    })    
-}
+            if ( response.success && response.data ) {
+                setUser( response.data.user );
+            }
+
+            await refreshUser();
+        },
+    });
+};
