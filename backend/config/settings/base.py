@@ -79,18 +79,18 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     },
     
-    # 'clinica': {
-    #     'ENGINE': 'mssql', 
-    #     'NAME': env('DB_NAME'),
-    #     'USER': env('DB_USER'),
-    #     'PASSWORD': env('DB_PASSWORD'),
-    #     'HOST': env('DB_HOST'),
-    #     'PORT': env('DB_PORT'),
-    #     'OPTIONS': {
-    #         'driver': 'ODBC Driver 17 for SQL Server',
-    #         'TrustServerCertificate': 'yes',
-    #     },
-    # },
+    'clinica': {
+        'ENGINE': 'mssql', 
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'TrustServerCertificate': 'yes',
+        },
+    },
 }
 
 

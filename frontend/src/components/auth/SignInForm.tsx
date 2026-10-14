@@ -6,6 +6,7 @@ import Label from "../form/Label"
 import Button from "../ui/button/Button";
 import type { LoginPayload } from "../../types/auth.types";
 import { useLogin } from "../../hooks/auth/useLogin";
+import { getSafeAuthorizationUrl } from "../../lib/authRedirect";
 
 const SignInForm = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -24,7 +25,20 @@ const SignInForm = () => {
      * el usuario antes de ser enviado
      * al login.
      */
-    const from = location.state?.from || "/applications";
+    const params = new URLSearchParams(location.search);
+
+    const authorizationUrl = getSafeAuthorizationUrl(
+        params.get("next"),
+    );
+
+    const requestedPath = location.state?.from;
+
+    const from =
+        typeof requestedPath === "string" &&
+        requestedPath.startsWith("/") &&
+        !requestedPath.startsWith("//")
+            ? requestedPath
+            : "/applications";
 
 	// Envio de datos
     const onSubmit: SubmitHandler<LoginPayload> = async (data) => {
@@ -32,6 +46,12 @@ const SignInForm = () => {
             const response = await loginMutation.mutateAsync(data);
 
             if (!response.success) {
+                return;
+            }
+
+            if (authorizationUrl) {
+                // Continuar el flujo OIDC en el backend de OLIMPO.
+                window.location.replace(authorizationUrl);
                 return;
             }
 

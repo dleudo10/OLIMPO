@@ -6,6 +6,7 @@ import ApplicationsPage from "../pages/ApplicationsPage"
 import FavoritesPage from "../pages/FavoritesPage"
 import NotificationsPage from "../pages/NotificationsPage"
 import ProtectedRoutes from "./ProtectedRoutes"
+import PublicRoute from "./PublicRoute"
 
 const SignIn = lazy(() => import("../pages/SignIn"))
 
@@ -29,8 +30,10 @@ const AppRouter = () => {
                         {/* ========================= */}
                         {/* AUTENTICACIÓN */}
                         {/* ========================= */}
-                        <Route path="/auth/signin" element={<SignIn />} />
-
+                        <Route element={<PublicRoute />}>
+                            <Route path="/auth/signin" element={<SignIn />} />
+                        </Route>
+                        
                         {/* ========================= */}
                         {/* 404 */}
                         {/* ========================= */}
