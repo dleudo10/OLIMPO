@@ -140,6 +140,7 @@ OAUTH2_PROVIDER = {
         "profile": "Datos básicos del perfil",
         "read": "Lectura de recursos",
         "apps": "Consultar aplicativos y roles asignados",
+        "introspection": "Permite consultar el estado de los tokens OAuth2",
     },
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": env("OIDC_RSA_PRIVATE_KEY").replace("\\n", "\n"),
