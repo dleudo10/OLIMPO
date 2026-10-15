@@ -4,6 +4,7 @@ from oauth2_provider.models import Application as OAuthClient
 from oauth2_provider.views import AuthorizationView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from apps.applications.models import StatusApplication
 
 from .models import AccessApplications, OIDCClient
 
@@ -11,20 +12,28 @@ def get_user_access(user, oauth_client):
     link = (
         OIDCClient.objects
         .select_related("application")
-        .filter(oauth_client=oauth_client, application__is_active=True)
+        .filter(
+            oauth_client=oauth_client, 
+            application__is_active=True, 
+            application__status=StatusApplication.AVAILABLE
+        )
         .first()
     )
     
     if link is None:
-        return None, []
+        return None, None
 
-    accesses = (
+    access = (
         AccessApplications.objects
-        .filter(user=user, application=link.application)
+        .filter(
+            user=user, 
+            application=link.application
+        )
         .select_related("role")
-        .prefetch_related("role__permissions")   # ajusta al nombre real del M2M
+        .prefetch_related("role__permissions")
+        .first()
     )
-    return link.application, list(accesses)
+    return link.application, access
 
 
 class OlimpoAuthorizationView(AuthorizationView):
@@ -38,8 +47,8 @@ class OlimpoAuthorizationView(AuthorizationView):
             if oauth_client is None:
                 return HttpResponseForbidden("Cliente OAuth desconocido.")
 
-            _, accesses = get_user_access(request.user, oauth_client)
-            if not accesses:
+            _, access = get_user_access(request.user, oauth_client)
+            if not access:
                 return HttpResponseForbidden("No tienes acceso a este aplicativo.")
 
         return super().dispatch(request, *args, **kwargs)
@@ -56,9 +65,9 @@ class AppContextView(APIView):
 
     def get(self, request):
         # request.auth es el AccessToken; .application es el cliente OAuth
-        application, accesses = get_user_access(request.user, request.auth.application)
+        application, access = get_user_access(request.user, request.auth.application)
 
-        if not accesses:
+        if not access:
             return Response({"detail": "Sin acceso a este aplicativo."}, status=403)
 
         return Response({
@@ -66,8 +75,7 @@ class AppContextView(APIView):
             "external_id": request.user.external_id,
             "full_name": request.user.full_name,
             "application": application.code,
-            "roles": sorted({a.role.code for a in accesses}),
-            "permissions": sorted(
-                {p.code for a in accesses for p in a.role.permissions.all()}
-            ),
+            "role_code" : access.role.code,
+            "role_name" : access.role.name,
+            "permissions" : access.role.permissions.all()
         })

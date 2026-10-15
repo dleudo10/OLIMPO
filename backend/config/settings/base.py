@@ -140,10 +140,10 @@ OAUTH2_PROVIDER = {
         "profile": "Datos básicos del perfil",
         "read": "Lectura de recursos",
         "apps": "Consultar aplicativos y roles asignados",
-        "introspection": "Permite consultar el estado de los tokens OAuth2",
     },
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": env("OIDC_RSA_PRIVATE_KEY").replace("\\n", "\n"),
+    
     # Tiempos de vida de los tokens
     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,
     "REFRESH_TOKEN_EXPIRE_SECONDS": 60 * 60 * 24 * 14,
@@ -153,6 +153,7 @@ OAUTH2_PROVIDER = {
     "OIDC_RP_INITIATED_LOGOUT_ENABLED": True,
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
     "OAUTH2_VALIDATOR_CLASS": "apps.accounts.oauth_validators.OlimpoOAuth2Validator",
+    "OIDC_RP_INITIATED_LOGOUT_ALWAYS_PROMPT": False,
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"

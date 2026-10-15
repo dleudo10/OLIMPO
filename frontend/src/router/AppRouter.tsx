@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react"
-import { BrowserRouter, Route, Routes } from "react-router"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router"
 
 import AppLayout from "../layout/AppLayout"
 import ApplicationsPage from "../pages/ApplicationsPage"
@@ -21,7 +21,10 @@ const AppRouter = () => {
                         {/* ========================= */}
                         <Route element={<ProtectedRoutes />}>
                             <Route element={<AppLayout />}>
-                                <Route path="/applications" element={<ApplicationsPage />} />
+                                <Route path="/">
+                                    <Route index element={<Navigate to="/applications" replace />} />
+                                    <Route path="/applications" element={<ApplicationsPage />} />
+                                </Route>
                                 <Route path="/favorites" element={<FavoritesPage />} />
                                 <Route path="/notifications" element={<NotificationsPage />} />
                             </Route>

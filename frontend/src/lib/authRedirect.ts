@@ -6,7 +6,6 @@ export function getSafeAuthorizationUrl(
 ): string | null {
     if (
         !next ||
-        !next.startsWith("/") ||
         next.startsWith("//") ||
         next.includes("\\")
     ) {
